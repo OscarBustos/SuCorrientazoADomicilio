@@ -152,11 +152,6 @@ public class DroneController {
 		return 0;
 	}
 
-	private void goHome() {
-		// TODO Auto-generated method stub
-
-	}
-
 	public static void main(String[] args) {
 		try {
 			if (args[0] != null && args[1] != null) {

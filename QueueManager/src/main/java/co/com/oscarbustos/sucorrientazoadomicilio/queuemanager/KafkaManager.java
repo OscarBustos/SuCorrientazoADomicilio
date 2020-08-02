@@ -33,9 +33,9 @@ public class KafkaManager implements QueueManager {
 	private static String CONSUME_TOPIC_NAME;
 	private static final String PROPERTIES_PATH = "kafka.properties.path";
 
-	private static Producer<Long, String> producer;
-	private static Consumer<Long, String> consumer;
-	private static Properties properties;
+	private Producer<Long, String> producer;
+	private Consumer<Long, String> consumer;
+	private Properties properties;
 
 	public KafkaManager(Path propertiesFile, String produceTopicName, String consumeTopicName) throws IOException {
 		loadProperties(propertiesFile);
@@ -43,7 +43,7 @@ public class KafkaManager implements QueueManager {
 		CONSUME_TOPIC_NAME = consumeTopicName;
 	}
 
-	private static Producer<Long, String> createProducer() {
+	private Producer<Long, String> createProducer() {
 		if (producer == null) {
 			Properties props = new Properties();
 			props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
@@ -106,20 +106,20 @@ public class KafkaManager implements QueueManager {
 		}
 	}
 
-	public static Properties getProperties() {
+	public Properties getProperties() {
 		return properties;
 	}
 
-	public static void setProperties(Properties properties) {
-		KafkaManager.properties = properties;
+	public void setProperties(Properties properties) {
+		this.properties = properties;
 	}
 
-	public static Producer<Long, String> getProducer() {
+	public Producer<Long, String> getProducer() {
 		return producer;
 	}
 
-	public static void setProducer(Producer<Long, String> producer) {
-		KafkaManager.producer = producer;
+	public void setProducer(Producer<Long, String> producer) {
+		this.producer = producer;
 	}
 
 	@Override
@@ -129,14 +129,14 @@ public class KafkaManager implements QueueManager {
 		String line = "";
 		if (consumerRecords.records(CONSUME_TOPIC_NAME).iterator() != null
 				&& consumerRecords.records(CONSUME_TOPIC_NAME).iterator().hasNext()) {
-			ConsumerRecord<Long, String> record =consumerRecords.records(CONSUME_TOPIC_NAME).iterator().next(); 
+			ConsumerRecord<Long, String> record = consumerRecords.records(CONSUME_TOPIC_NAME).iterator().next();
 			record.offset();
 			line = (String) record.value();
 		}
 		return line;
 	}
 
-	public static void createConsumer() {
+	public void createConsumer() {
 		if (consumer == null) {
 			Properties props = new Properties();
 			props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
@@ -161,4 +161,10 @@ public class KafkaManager implements QueueManager {
 		consumer.close();
 	}
 
+	@Override
+	public void commit() {
+		consumer.commitSync();
+	}
+	
+	
 }

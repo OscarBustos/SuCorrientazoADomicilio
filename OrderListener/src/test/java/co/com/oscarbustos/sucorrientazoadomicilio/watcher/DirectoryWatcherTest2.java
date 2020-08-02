@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import co.com.oscarbustos.sucorrientazoadomicilio.filemanager.FileManager;
 
-class DirectoryWatcherTest {
+class DirectoryWatcherTest2 {
 
 	@Test
 	void testStartWatcher() {
@@ -64,16 +64,23 @@ class DirectoryWatcherTest {
 			executor2.execute(() -> {
 				try {
 
-					for (int i = 0; i < 10; i++) {
-						Path file = new File("./src/test/resources/newOrders/file" + i + ".txt").toPath();
-						BufferedWriter writer = FileManager.getBufferedWriter(file);
-						for (int j = 0; j < 3; j++) {
-							writer.append("ABCDE");
-							writer.newLine();
+					for (int i = 1; i <= 10; i++) {
+						String fileName = "";
+						if (i / 10 == 0) {
+							fileName += "0";
 						}
-						writer.append("ABCDE");
+						fileName += i;
+						Path file = new File("./src/test/resources/newOrders/in" + fileName + ".txt").toPath();
+						BufferedWriter writer = FileManager.getBufferedWriter(file);
+
+						writer.append("AAAAIAA");
+						writer.newLine();
+						writer.append("DDDAIAD");
+						writer.newLine();
+						writer.append("AAIADAD");
+
 						writer.close();
-						File newFile = new File("./src/test/resources/orders/file" + i + ".txt");
+						File newFile = new File("./src/test/resources/orders/in" + fileName + ".txt");
 						file.toFile().renameTo(newFile);
 						Thread.sleep(1000);
 					}
@@ -89,6 +96,8 @@ class DirectoryWatcherTest {
 					prev = runnable.getWatcher().getCount();
 				}
 				if (runnable.getWatcher().getCount() >= 10) {
+
+					Thread.sleep(5000);
 					runnable.stop();
 					executor1.shutdownNow();
 
@@ -99,8 +108,14 @@ class DirectoryWatcherTest {
 			int count = 0;
 
 			Thread.sleep(1000);
-			for (int i = 0; i < 10; i++) {
-				File newFile = new File(processedOrderDirectory.toString() + "/file" + i + ".txt");
+			for (int i = 1; i <= 10; i++) {
+
+				String fileName = "";
+				if (i / 10 == 0) {
+					fileName += "0";
+				}
+				fileName += i;
+				File newFile = new File(processedOrderDirectory.toString() + "/in" + fileName + ".txt");
 				if (newFile.exists()) {
 					count++;
 					result = true;

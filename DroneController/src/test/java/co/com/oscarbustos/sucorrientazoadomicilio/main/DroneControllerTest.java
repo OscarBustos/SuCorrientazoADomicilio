@@ -15,7 +15,7 @@ class DroneControllerTest {
 	void testStart() {
 		try {
 			String args[] = {
-					"D:/Workspaces/S4N_TecnicalTest/SuCorrientazoADomicilio/OrderListener/src/main/resources/application.properties",
+					"D:/Workspaces/S4N_TecnicalTest/SuCorrientazoADomicilio/OrderListener/src/test/resources/application.properties",
 					"01" };
 			if (args[0] != null && args[1] != null) {
 				Path propertiesFile = new File(args[0]).toPath();
