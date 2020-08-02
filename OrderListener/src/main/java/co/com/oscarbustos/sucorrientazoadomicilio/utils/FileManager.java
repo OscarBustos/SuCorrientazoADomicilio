@@ -43,19 +43,19 @@ public class FileManager {
 	 * destination directory, its content is appended, and the file is deleted.
 	 * 
 	 * @param file
-	 * @param procecedOrdersDirectory
+	 * @param processedOrdersDirectory
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean moveFile(Path file, Path procecedOrdersDirectory) throws IOException {
+	public static boolean moveFile(Path file, Path processedOrdersDirectory) throws IOException {
 
 		createDirectory(
-				procecedOrdersDirectory.toString().substring(0, procecedOrdersDirectory.toString().lastIndexOf("\\")));
+				processedOrdersDirectory.toString().substring(0, processedOrdersDirectory.toString().lastIndexOf("\\")));
 
-		if (procecedOrdersDirectory.toFile().exists()) {
+		if (processedOrdersDirectory.toFile().exists()) {
 			BufferedReader reader = getBufferedReader(file);
 			String line = null;
-			BufferedWriter writer = getBufferedWriter(procecedOrdersDirectory);
+			BufferedWriter writer = getBufferedWriter(processedOrdersDirectory);
 			while ((line = reader.readLine()) != null) {
 				writer.newLine();
 				writer.append(line);
@@ -69,7 +69,7 @@ public class FileManager {
 			return deleteFile(file.toFile());
 
 		} else {
-			boolean done = file.toFile().renameTo(procecedOrdersDirectory.toFile());
+			boolean done = file.toFile().renameTo(processedOrdersDirectory.toFile());
 			return done;
 		}
 

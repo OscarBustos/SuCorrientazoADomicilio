@@ -15,12 +15,12 @@ public class OrderManager implements Runnable {
 	private Logger logger = LogManager.getLogger(OrderManager.class);
 	private Path file;
 	private QueueManager queueManager;
-	private Path procecedOrdersDirectory;
+	private Path processedOrdersDirectory;
 
-	public OrderManager(Path file, QueueManager queueManager, Path procecedOrdersDirectory) {
+	public OrderManager(Path file, QueueManager queueManager, Path processedOrdersDirectory) {
 		this.file = file;
 		this.queueManager = queueManager;
-		this.procecedOrdersDirectory = procecedOrdersDirectory;
+		this.processedOrdersDirectory = processedOrdersDirectory;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class OrderManager implements Runnable {
 				queueManager.produce(line);
 			}
 			FileManager.closeBufferedReader(reader);
-			FileManager.moveFile(file, procecedOrdersDirectory);
+			FileManager.moveFile(file, processedOrdersDirectory);
 		} catch (IOException e) {
 			logger.error("OrderManager - run(): ", e);
 		}

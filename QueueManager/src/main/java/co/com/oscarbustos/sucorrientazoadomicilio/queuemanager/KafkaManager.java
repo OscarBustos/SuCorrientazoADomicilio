@@ -109,6 +109,22 @@ public class KafkaManager implements QueueManager {
 		}
 	}
 
+	public static Properties getProperties() {
+		return properties;
+	}
+
+	public static void setProperties(Properties properties) {
+		KafkaManager.properties = properties;
+	}
+
+	public static Producer<Long, String> getProducer() {
+		return producer;
+	}
+
+	public static void setProducer(Producer<Long, String> producer) {
+		KafkaManager.producer = producer;
+	}
+
 	/*
 	 * public static Consumer<Long, String> createConsumer() { Properties props =
 	 * new Properties(); props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,

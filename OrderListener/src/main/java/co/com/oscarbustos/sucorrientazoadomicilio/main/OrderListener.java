@@ -21,12 +21,13 @@ public class OrderListener {
 			Path propertiesFile = new File(args[0]).toPath();
 			if (propertiesFile.toFile().exists()) {
 				SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-				StringBuilder procecedOrderDirectory = new StringBuilder("./procecedOrders");
-				procecedOrderDirectory.append("/");
-				procecedOrderDirectory.append(format.format(new Date()));
-				FileManager.createDirectory(procecedOrderDirectory.toString());
+				StringBuilder processedOrderDirectory = new StringBuilder("./processedOrders");
+				FileManager.createDirectory(processedOrderDirectory.toString());
+				processedOrderDirectory.append("/");
+				processedOrderDirectory.append(format.format(new Date()));
+				FileManager.createDirectory(processedOrderDirectory.toString());
 				DirectoryWatcher watcher = new DirectoryWatcher();
-				watcher.startWatcher(new File("./orders"), procecedOrderDirectory.toString(), propertiesFile);
+				watcher.startWatcher(new File("./orders"), processedOrderDirectory.toString(), propertiesFile);
 			}
 		} else {
 			logger.info("application.properties missing");

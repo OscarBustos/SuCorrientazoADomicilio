@@ -23,7 +23,7 @@ class DirectoryWatcherTest {
 		try {
 			{
 				boolean borrado = false;
-				File file = new File("./src/test/resources/procecedOrders");
+				File file = new File("./src/test/resources/processedOrders");
 				if (file.exists()) {
 					borrado = FileManager.deleteFile(file);
 				}
@@ -39,15 +39,15 @@ class DirectoryWatcherTest {
 
 			}
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-			StringBuilder procecedOrderDirectory = new StringBuilder("./src/test/resources/procecedOrders");
-			procecedOrderDirectory.append("/");
-			procecedOrderDirectory.append(format.format(new Date()));
+			StringBuilder processedOrderDirectory = new StringBuilder("./src/test/resources/processedOrders");
+			processedOrderDirectory.append("/");
+			processedOrderDirectory.append(format.format(new Date()));
 
 			File directory = new File("./src/test/resources/orders");
 			FileManager.createDirectory("./src/test/resources/orders");
 			FileManager.createDirectory("./src/test/resources/newOrders");
-			FileManager.createDirectory("./src/test/resources/procecedOrders");
-			FileManager.createDirectory("./src/test/resources/procecedOrders/" + format.format(new Date()));
+			FileManager.createDirectory("./src/test/resources/processedOrders");
+			FileManager.createDirectory("./src/test/resources/processedOrders/" + format.format(new Date()));
 
 			executor1 = Executors.newSingleThreadExecutor();
 
@@ -56,7 +56,7 @@ class DirectoryWatcherTest {
 							.toPath();
 
 			DirectoryWatcherRunnable runnable = new DirectoryWatcherRunnable(true, directory,
-					procecedOrderDirectory.toString(), propertiesPath);
+					processedOrderDirectory.toString(), propertiesPath);
 
 			executor1.execute(runnable);
 			Thread.sleep(5000);
@@ -100,7 +100,7 @@ class DirectoryWatcherTest {
 
 			Thread.sleep(1000);
 			for (int i = 0; i < 10; i++) {
-				File newFile = new File(procecedOrderDirectory.toString() + "/file" + i + ".txt");
+				File newFile = new File(processedOrderDirectory.toString() + "/file" + i + ".txt");
 				if (newFile.exists()) {
 					count++;
 					result = true;

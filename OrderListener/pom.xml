@@ -6,7 +6,7 @@
 	<artifactId>OrderListener</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>OrderListener</name>
-	<description>DirectoryWatch API implementation, once a new file is puted in an specific folder, it is read and each line is registered in a queue. Once the file was read, it is stored in a proceced orders' directory.</description>
+	<description>DirectoryWatch API implementation, once a new file is puted in an specific folder, it is read and each line is registered in a queue. Once the file was read, it is stored in a processed orders' directory.</description>
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->

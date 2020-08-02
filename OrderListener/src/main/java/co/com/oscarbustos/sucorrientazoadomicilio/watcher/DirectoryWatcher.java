@@ -27,12 +27,12 @@ public class DirectoryWatcher {
 	private boolean running;
 	private int count;
 
-	public void startWatcher(File directory, String procecedOrdersDirectory, Path propertiesFile) {
+	public void startWatcher(File directory, String processedOrdersDirectory, Path propertiesFile) {
 		try {
 			watcher = FileSystems.getDefault().newWatchService();
 			Path dir = (directory).toPath();
 			WatchKey key = dir.register(watcher, ENTRY_CREATE);
-			run(dir, key, procecedOrdersDirectory, propertiesFile);
+			run(dir, key, processedOrdersDirectory, propertiesFile);
 
 		} catch (IOException e) {
 			logger.error("Couldn't register directory " + directory.getName(), e);
@@ -43,7 +43,7 @@ public class DirectoryWatcher {
 		running = false;
 	}
 
-	private synchronized void run(Path dir, WatchKey key, String procecedOrdersDirectory, Path propertiesFile) {
+	private synchronized void run(Path dir, WatchKey key, String processedOrdersDirectory, Path propertiesFile) {
 		running = true;
 		while (running) {
 
@@ -86,8 +86,8 @@ public class DirectoryWatcher {
 				}
 				ExecutorService executor = Executors.newSingleThreadExecutor();
 
-				Path procecedOrdersPath = new File(procecedOrdersDirectory + "/" + file.getFileName()).toPath();
-				executor.execute(new OrderManager(file, queueManager, procecedOrdersPath));
+				Path processedOrdersPath = new File(processedOrdersDirectory + "/" + file.getFileName()).toPath();
+				executor.execute(new OrderManager(file, queueManager, processedOrdersPath));
 				count++;
 			}
 

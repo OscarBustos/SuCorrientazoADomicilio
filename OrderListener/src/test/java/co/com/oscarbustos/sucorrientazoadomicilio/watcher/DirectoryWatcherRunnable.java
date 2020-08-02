@@ -8,15 +8,15 @@ public class DirectoryWatcherRunnable implements Runnable {
 	private boolean running;
 	private DirectoryWatcher watcher;
 	private File directory;
-	private String procecedOrdersDirectory;
+	private String processedOrdersDirectory;
 	private Path propertiesPath;
 
-	public DirectoryWatcherRunnable(boolean running, File directory, String procecedOrdersDirectory,
+	public DirectoryWatcherRunnable(boolean running, File directory, String processedOrdersDirectory,
 			Path propertiesPath) {
 		this.running = running;
 		this.watcher = new DirectoryWatcher();
 		this.directory = directory;
-		this.procecedOrdersDirectory = procecedOrdersDirectory;
+		this.processedOrdersDirectory = processedOrdersDirectory;
 		this.propertiesPath = propertiesPath;
 	}
 
@@ -28,7 +28,7 @@ public class DirectoryWatcherRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		watcher.startWatcher(directory, procecedOrdersDirectory, propertiesPath);
+		watcher.startWatcher(directory, processedOrdersDirectory, propertiesPath);
 	}
 
 	public DirectoryWatcher getWatcher() {

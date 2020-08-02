@@ -59,14 +59,14 @@ class FileManagerTest {
 			writer.flush();
 			FileManager.closeBufferedWriter(writer);
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-			StringBuilder procecedOrderDirectory = new StringBuilder("./procecedOrders");
-			procecedOrderDirectory.append("/");
-			procecedOrderDirectory.append(format.format(new Date()));
+			StringBuilder processedOrderDirectory = new StringBuilder("./processedOrders");
+			processedOrderDirectory.append("/");
+			processedOrderDirectory.append(format.format(new Date()));
 
-			Path procecedOrdersDirectory = new File(procecedOrderDirectory.toString() + "/" + file.getFileName())
+			Path processedOrdersDirectory = new File(processedOrderDirectory.toString() + "/" + file.getFileName())
 					.toPath();
 
-			boolean done = FileManager.moveFile(file, procecedOrdersDirectory);
+			boolean done = FileManager.moveFile(file, processedOrdersDirectory);
 			assertTrue(done);
 
 		} catch (IOException e) {
