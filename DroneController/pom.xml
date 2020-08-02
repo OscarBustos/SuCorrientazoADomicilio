@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>co.com.oscarbustos.sucorrientazoadomicilio</groupId>
+	<artifactId>DroneController</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>DroneController</name>
+	<description>Project used to control the actions taken by the drone, once it is turned on, reads the specified topic from a kafka queue and procedes to move as it has been specified, once it had arrived to the specified point, send a delivery notification thruough a kafka topic; and after that, it continue with its deliveries. Once it has finished its deliveries (limmit specified), returns home, and turns off. </description>
+
+	<dependencies>
+		<dependency>
+			<groupId>co.com.oscarbustos.sucorrientazoadomicilio</groupId>
+			<artifactId>QueueManager</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.6.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>3.4.6</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

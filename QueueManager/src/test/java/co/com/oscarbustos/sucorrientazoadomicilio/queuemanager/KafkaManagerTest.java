@@ -15,7 +15,7 @@ class KafkaManagerTest {
 		Path propertiesFile = new File(
 				"D:\\Workspaces\\S4N_TecnicalTest\\SuCorrientazoADomicilio\\OrderListener\\src\\main\\resources\\application.properties")
 						.toPath();
-		KafkaManager k = new KafkaManager(propertiesFile, "in01");
+		KafkaManager k = new KafkaManager(propertiesFile, "in01", "out01");
 		k.produce("new message 01");
 		assertAll(() -> k.produce("new message 01"));
 
@@ -26,7 +26,7 @@ class KafkaManagerTest {
 		Path propertiesFile = new File(
 				"D:\\Workspaces\\S4N_TecnicalTest\\SuCorrientazoADomicilio\\OrderListener\\src\\main\\resources\\application.properties")
 						.toPath();
-		KafkaManager k = new KafkaManager(propertiesFile, "in01");
+		KafkaManager k = new KafkaManager(propertiesFile, "in01", "out01");
 		assertNotNull(k.getProperties().get("bootstrap.servers"));
 	}
 

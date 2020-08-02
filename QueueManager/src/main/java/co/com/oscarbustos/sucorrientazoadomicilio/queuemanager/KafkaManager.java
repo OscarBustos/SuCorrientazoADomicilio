@@ -4,18 +4,24 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -23,23 +29,24 @@ public class KafkaManager implements QueueManager {
 
 	private static Logger logger = LogManager.getLogger(KafkaManager.class);
 
-	private static String TOPIC_NAME = "topic.name";
-	private static String PROPERTIES_PATH = "kafka.properties.path";
+	private static String PRODUCE_TOPIC_NAME;
+	private static String CONSUME_TOPIC_NAME;
+	private static final String PROPERTIES_PATH = "kafka.properties.path";
 
 	private static Producer<Long, String> producer;
+	private static Consumer<Long, String> consumer;
 	private static Properties properties;
 
-	public KafkaManager(Path propertiesFile, String topicName) throws IOException {
+	public KafkaManager(Path propertiesFile, String produceTopicName, String consumeTopicName) throws IOException {
 		loadProperties(propertiesFile);
-		TOPIC_NAME = topicName;
+		PRODUCE_TOPIC_NAME = produceTopicName;
+		CONSUME_TOPIC_NAME = consumeTopicName;
 	}
 
 	private static Producer<Long, String> createProducer() {
 		if (producer == null) {
 			Properties props = new Properties();
 			props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
-			// props.put(ProducerConfig.CLIENT_ID_CONFIG,
-			// properties.get(ProducerConfig.CLIENT_ID_CONFIG));
 			props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
 					properties.get(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG));
 			props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
@@ -49,27 +56,17 @@ public class KafkaManager implements QueueManager {
 		return producer;
 	}
 
-	public static void main(String args[]) throws IOException {
-		if (args[0] != null) {
-			Path propertiesFile = new File(args[0]).toPath();
-			if (propertiesFile.toFile().exists()) {
-				KafkaManager k = new KafkaManager(propertiesFile, "in01");
-				k.produce("new message 01");
-			}
-		}
-	}
-
 	public void produce(String line) {
 
 		try {
-			createTopic();
+			createTopic(PRODUCE_TOPIC_NAME);
 		} catch (Exception e) {
-			logger.error("KafkaManager.produce() - Error creating topic " + TOPIC_NAME, e);
+			logger.error("KafkaManager.produce() - Error creating topic " + PRODUCE_TOPIC_NAME, e);
 		}
 
 		Producer<Long, String> producer = createProducer();
-
-		ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(TOPIC_NAME, line);
+		System.out.println(PRODUCE_TOPIC_NAME);
+		ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(PRODUCE_TOPIC_NAME, line);
 		try {
 			producer.send(record).get();
 		} catch (Exception e) {
@@ -78,10 +75,10 @@ public class KafkaManager implements QueueManager {
 
 	}
 
-	private void createTopic() throws Exception {
+	private void createTopic(String topicName) throws Exception {
 
 		AdminClient adminClient = AdminClient.create(properties);
-		NewTopic newTopic = new NewTopic(TOPIC_NAME, 1, (short) 1);
+		NewTopic newTopic = new NewTopic(topicName, 1, (short) 1);
 
 		List<NewTopic> newTopics = new ArrayList<NewTopic>();
 		newTopics.add(newTopic);
@@ -125,23 +122,43 @@ public class KafkaManager implements QueueManager {
 		KafkaManager.producer = producer;
 	}
 
-	/*
-	 * public static Consumer<Long, String> createConsumer() { Properties props =
-	 * new Properties(); props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-	 * IKafkaConstants.KAFKA_BROKERS); props.put(ConsumerConfig.GROUP_ID_CONFIG,
-	 * IKafkaConstants.GROUP_ID_CONFIG);
-	 * props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-	 * LongDeserializer.class.getName());
-	 * props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-	 * StringDeserializer.class.getName());
-	 * props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,
-	 * IKafkaConstants.MAX_POLL_RECORDS);
-	 * props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-	 * props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-	 * IKafkaConstants.OFFSET_RESET_EARLIER); Consumer<Long, String> consumer = new
-	 * KafkaConsumer<>(props);
-	 * consumer.subscribe(Collections.singletonList(IKafkaConstants.TOPIC_NAME));
-	 * return consumer; }
-	 */
+	@Override
+	public String consume() {
+		createConsumer();
+		ConsumerRecords<Long, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));
+		String line = "";
+		if (consumerRecords.records(CONSUME_TOPIC_NAME).iterator() != null
+				&& consumerRecords.records(CONSUME_TOPIC_NAME).iterator().hasNext()) {
+			ConsumerRecord<Long, String> record =consumerRecords.records(CONSUME_TOPIC_NAME).iterator().next(); 
+			record.offset();
+			line = (String) record.value();
+		}
+		return line;
+	}
+
+	public static void createConsumer() {
+		if (consumer == null) {
+			Properties props = new Properties();
+			props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
+			props.put(ConsumerConfig.GROUP_ID_CONFIG, properties.get(ConsumerConfig.GROUP_ID_CONFIG));
+
+			props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+					properties.get(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG));
+			props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+					properties.get(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG));
+			props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, properties.get(ConsumerConfig.MAX_POLL_RECORDS_CONFIG));
+			props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
+					properties.get(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG));
+			props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, properties.get(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG));
+			consumer = new KafkaConsumer<>(props);
+			consumer.subscribe(Stream.of(CONSUME_TOPIC_NAME).collect(Collectors.toList()));
+		}
+	}
+
+	@Override
+	public void closeConsumer() {
+		consumer.commitSync();
+		consumer.close();
+	}
 
 }

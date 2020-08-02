@@ -79,7 +79,7 @@ public class DirectoryWatcher {
 						file.getFileName().toString().lastIndexOf("."));
 				QueueManager queueManager = null;
 				try {
-					queueManager = new KafkaManager(propertiesFile, topicName);
+					queueManager = new KafkaManager(propertiesFile, topicName, null);
 				} catch (IOException e) {
 					logger.error(e);
 					return;
