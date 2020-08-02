@@ -1,6 +1,7 @@
 package co.com.oscarbustos.sucorrientazoadomicilio.watcher;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class DirectoryWatcherRunnable implements Runnable {
 
@@ -8,12 +9,15 @@ public class DirectoryWatcherRunnable implements Runnable {
 	private DirectoryWatcher watcher;
 	private File directory;
 	private String procecedOrdersDirectory;
+	private Path propertiesPath;
 
-	public DirectoryWatcherRunnable(boolean running, File directory, String procecedOrdersDirectory) {
+	public DirectoryWatcherRunnable(boolean running, File directory, String procecedOrdersDirectory,
+			Path propertiesPath) {
 		this.running = running;
 		this.watcher = new DirectoryWatcher();
 		this.directory = directory;
 		this.procecedOrdersDirectory = procecedOrdersDirectory;
+		this.propertiesPath = propertiesPath;
 	}
 
 	public void stop() {
@@ -24,7 +28,7 @@ public class DirectoryWatcherRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		watcher.startWatcher(directory, procecedOrdersDirectory);
+		watcher.startWatcher(directory, procecedOrdersDirectory, propertiesPath);
 	}
 
 	public DirectoryWatcher getWatcher() {

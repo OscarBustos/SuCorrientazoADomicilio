@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import co.com.oscarbustos.sucorrientazoadomicilio.queues.QueueManager;
+import co.com.oscarbustos.sucorrientazoadomicilio.queuemanager.QueueManager;
 import co.com.oscarbustos.sucorrientazoadomicilio.utils.FileManager;
 
 public class OrderManager implements Runnable {

@@ -1,26 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>co.com.oscarbustos.sucorrientazoadomicilio</groupId>
-	<artifactId>OrderListener</artifactId>
+	<artifactId>QueueManager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>OrderListener</name>
-	<description>DirectoryWatch API implementation, once a new file is puted in an specific folder, it is read and each line is registered in a queue. Once the file was read, it is stored in a proceced orders' directory.</description>
+	<name>QueueManager</name>
+	<description>Library used to implement services, as consumers and producers,  related with queue management. In this library you will find Kafka API implementation and other utilities. </description>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.13.3</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.30</version>
 		</dependency>
 
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
 		<dependency>
-			<groupId>co.com.oscarbustos.sucorrientazoadomicilio</groupId>
-			<artifactId>QueueManager</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>2.5.0</version>
 		</dependency>
+
+
 
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>

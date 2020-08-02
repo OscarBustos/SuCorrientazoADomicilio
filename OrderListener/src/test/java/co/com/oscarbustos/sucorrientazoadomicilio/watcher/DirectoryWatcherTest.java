@@ -51,8 +51,12 @@ class DirectoryWatcherTest {
 
 			executor1 = Executors.newSingleThreadExecutor();
 
+			Path propertiesPath = new File(
+					"D:/Workspaces/S4N_TecnicalTest/SuCorrientazoADomicilio/OrderListener/src/main/resources/application.properties")
+							.toPath();
+
 			DirectoryWatcherRunnable runnable = new DirectoryWatcherRunnable(true, directory,
-					procecedOrderDirectory.toString());
+					procecedOrderDirectory.toString(), propertiesPath);
 
 			executor1.execute(runnable);
 			Thread.sleep(5000);

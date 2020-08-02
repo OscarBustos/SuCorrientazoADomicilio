@@ -1,4 +1,4 @@
-package co.com.oscarbustos.sucorrientazoadomicilio.queues;
+package co.com.oscarbustos.sucorrientazoadomicilio.queuemanager;
 
 public interface QueueManager {
 

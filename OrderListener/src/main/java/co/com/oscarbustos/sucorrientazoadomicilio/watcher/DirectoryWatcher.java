@@ -14,13 +14,11 @@ import java.nio.file.WatchService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.sql.rowset.spi.SyncResolver;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import co.com.oscarbustos.sucorrientazoadomicilio.queues.KafkaManager;
-import co.com.oscarbustos.sucorrientazoadomicilio.queues.QueueManager;
+import co.com.oscarbustos.sucorrientazoadomicilio.queuemanager.KafkaManager;
+import co.com.oscarbustos.sucorrientazoadomicilio.queuemanager.QueueManager;
 
 public class DirectoryWatcher {
 
@@ -29,12 +27,12 @@ public class DirectoryWatcher {
 	private boolean running;
 	private int count;
 
-	public void startWatcher(File directory, String procecedOrdersDirectory) {
+	public void startWatcher(File directory, String procecedOrdersDirectory, Path propertiesFile) {
 		try {
 			watcher = FileSystems.getDefault().newWatchService();
 			Path dir = (directory).toPath();
 			WatchKey key = dir.register(watcher, ENTRY_CREATE);
-			run(dir, key, procecedOrdersDirectory);
+			run(dir, key, procecedOrdersDirectory, propertiesFile);
 
 		} catch (IOException e) {
 			logger.error("Couldn't register directory " + directory.getName(), e);
@@ -45,7 +43,7 @@ public class DirectoryWatcher {
 		running = false;
 	}
 
-	private synchronized void run(Path dir, WatchKey key, String procecedOrdersDirectory) {
+	private synchronized void run(Path dir, WatchKey key, String procecedOrdersDirectory, Path propertiesFile) {
 		running = true;
 		while (running) {
 
@@ -77,7 +75,15 @@ public class DirectoryWatcher {
 					continue;
 				}
 
-				QueueManager queueManager = new KafkaManager();
+				String topicName = file.getFileName().toString().substring(0,
+						file.getFileName().toString().lastIndexOf("."));
+				QueueManager queueManager = null;
+				try {
+					queueManager = new KafkaManager(propertiesFile, topicName);
+				} catch (IOException e) {
+					logger.error(e);
+					return;
+				}
 				ExecutorService executor = Executors.newSingleThreadExecutor();
 
 				Path procecedOrdersPath = new File(procecedOrdersDirectory + "/" + file.getFileName()).toPath();
