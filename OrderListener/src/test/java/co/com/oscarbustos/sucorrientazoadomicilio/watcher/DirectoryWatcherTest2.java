@@ -64,7 +64,7 @@ class DirectoryWatcherTest2 {
 			executor2.execute(() -> {
 				try {
 
-					for (int i = 1; i <= 10; i++) {
+					for (int i = 1; i <= 1; i++) {
 						String fileName = "";
 						if (i / 10 == 0) {
 							fileName += "0";
@@ -95,7 +95,7 @@ class DirectoryWatcherTest2 {
 				if (prev != runnable.getWatcher().getCount()) {
 					prev = runnable.getWatcher().getCount();
 				}
-				if (runnable.getWatcher().getCount() >= 10) {
+				if (runnable.getWatcher().getCount() >= 1) {
 
 					Thread.sleep(5000);
 					runnable.stop();
@@ -108,7 +108,7 @@ class DirectoryWatcherTest2 {
 			int count = 0;
 
 			Thread.sleep(1000);
-			for (int i = 1; i <= 10; i++) {
+			for (int i = 1; i <= 1; i++) {
 
 				String fileName = "";
 				if (i / 10 == 0) {

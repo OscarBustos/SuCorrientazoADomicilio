@@ -42,11 +42,18 @@ public class DeliveryManager implements Runnable {
 	public void run() {
 		running = true;
 		while (running) {
-			String line = queueManager.consume();
-			if (line != null && !"".contentEquals(line)) {
-				System.out.println(line);
+			String record = queueManager.consume();
+			if (record != null && !"".contentEquals(record)) {
 				try {
-					FileManager.write(line, fileName);
+					String data[] = record.split(",");
+					StringBuilder line = new StringBuilder();
+					line.append("(");
+					line.append(data[0]);
+					line.append(",");
+					line.append(data[1]);
+					line.append(")");
+					line.append(defineDirection(data[2]));
+					FileManager.write(line.toString(), fileName);
 				} catch (IOException e) {
 					logger.error("DeliveryManager run() - Error writing file");
 				}
@@ -58,6 +65,21 @@ public class DeliveryManager implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private String defineDirection(String direction) {
+		switch (direction) {
+		case "N":
+			return " dirección Norte";
+
+		case "E":
+			return " dirección Oriente";
+		case "S":
+			return " dirección Sur";
+		case "W":
+			return " dirección Occidente";
+		}
+		return null;
 	}
 
 }
